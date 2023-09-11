@@ -198,9 +198,10 @@ public class ProductController {
 //        return Result.success(null);
 //    }
 //    @PostMapping("/transaction/user/upload")
-//    public Result upLoad (Integer uuid){
+//    public Result upLoad (Integer contactWay){
 //        Goods goods =new Goods();
-//        goods.setPiece(uuid);
+//        goods.setCreated(LocalDateTime.now());
+//        goods.setDiscount(contactWay);
 //        boolean result =goodsService.save(goods);
 //        if (result)return Result.success(200,"成功");
 //        else return Result.fail("上传失败");
