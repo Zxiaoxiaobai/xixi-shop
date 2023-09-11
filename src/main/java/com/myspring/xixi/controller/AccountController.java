@@ -39,11 +39,10 @@ public class AccountController {
 //    }
 
     @PostMapping("/transaction/user/login")
-    public Result login(String username ,String password, HttpServletResponse response){
-
+    public Result login(String username ,String password){
         User user = userService.getOne(new QueryWrapper<User>().eq("username", username));
         if(user != null) {
-            if(!user.getPassword().equals(SecureUtil.md5(password))) {
+            if(!user.getPassword().equals(password)) {
                 return Result.fail("用户名或密码错误！");
             }
 //            if(user.getPass() == 0){
@@ -55,9 +54,9 @@ public class AccountController {
         } else {
             return Result.fail("用户名或密码错误！");
         }
-        String jwt = jwtUtils.generateToken(user.getId());
-        response.setHeader("Authorization", jwt);
-        response.setHeader("Access-control-Expose-Headers", "Authorization");
+//        String jwt = jwtUtils.generateToken(user.getId());
+//        response.setHeader("Authorization", jwt);
+//        response.setHeader("Access-control-Expose-Headers", "Authorization");
 
         return Result.success(MapUtil.builder()
                 .put("id", user.getId())

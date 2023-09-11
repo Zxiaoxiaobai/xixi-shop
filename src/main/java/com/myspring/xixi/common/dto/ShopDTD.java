@@ -14,6 +14,17 @@ public class ShopDTD {
     Integer contactWay;
     //商品id
     Integer commodityId;
+    //商品状态 0审核 1通过 2不通过
+    Integer pass;
+
+    public Integer getPass() {
+        return pass;
+    }
+
+    public void setPass(Integer pass) {
+        this.pass = pass;
+    }
+
     public Integer getClassifyId() {
         return classifyId;
     }

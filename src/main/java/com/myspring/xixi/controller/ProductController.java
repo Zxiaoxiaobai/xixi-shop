@@ -37,15 +37,15 @@ public class ProductController {
      * 商城首页按分类展示所有商品
      * @return
      */
-//    @
+
     @GetMapping("/transaction/commodity/classifyId")
-    public Result getShops(Long classifyId){
+    public Result getShops(Long classifyId) {
         //belongId   分类 0，教材教辅，1，生活用品,2,电子数码,3,其他
 
         List<Goods> myGoods = goodsService.getMyGoods(classifyId);
-        List<ShopDTD> shopDTDS =new ArrayList<>();
-        for(int i=0;i<myGoods.size();i++){
-            ShopDTD shopDTD =new ShopDTD();
+        List<ShopDTD> shopDTDS = new ArrayList<>();
+        for (int i = 0; i < myGoods.size(); i++) {
+            ShopDTD shopDTD = new ShopDTD();
             //分类
             shopDTD.setClassifyId(myGoods.get(i).getBelongId());
             //照片
@@ -60,9 +60,9 @@ public class ProductController {
             shopDTD.setContactWay(myGoods.get(i).getDiscount());
             shopDTDS.add(shopDTD);
         }
-        System.out.println(shopDTDS);
+        //System.out.println(shopDTDS);
         return Result.success(shopDTDS);
-
+    }
 
 //        List<Goods> myGoods = goodsService.getMyGoods(classifyId);
 //        if(myGoods.size() != 0){
@@ -101,6 +101,31 @@ public class ProductController {
 //        }else{
 //            return Result.success(myGoods);
 //        }
+    @GetMapping("/transaction/user/getUpload")
+    public Result getUpload(Integer uuid){
+        List<Goods> allGoods = goodsService.getAllGoods();
+        List<ShopDTD> shopDTDS =new ArrayList<>();
+        for (int i = 0; i < allGoods.size(); i++) {
+            ShopDTD shopDTD = new ShopDTD();
+            if(allGoods.get(i).getPiece()==uuid){
+                //分类
+                shopDTD.setClassifyId(allGoods.get(i).getBelongId());
+                //照片
+                //shopDTD.setCommodityImage(allGoods.get(i).getPicGoods());
+                //名称
+                shopDTD.setCommodityName(allGoods.get(i).getGoodsName());
+                //Id
+                shopDTD.setCommodityId(allGoods.get(i).getId());
+                //价格
+                shopDTD.setCommodityPrice(allGoods.get(i).getPrice());
+                //联系方式
+                shopDTD.setContactWay(allGoods.get(i).getDiscount());
+                //审核状态
+                shopDTD.setPass(allGoods.get(i).getPass());
+                shopDTDS.add(shopDTD);
+                }
+        }
+        return Result.success(shopDTDS);
     }
 
     @GetMapping("/goods")
@@ -223,7 +248,8 @@ public class ProductController {
         goods.setDiscount(contactWay);
         //所属人id
         goods.setPiece(uuid);
-
+        //审核状态
+        goods.setPiece(0);
         boolean result =goodsService.save(goods);
         if (result)return Result.success(200,"成功");
         else return Result.fail("上传失败");
