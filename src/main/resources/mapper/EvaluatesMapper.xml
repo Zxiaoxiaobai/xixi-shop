@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myspring.xixi.mapper.EvaluatesMapper">
+
+    <resultMap id="BaseResultMap" type="com.myspring.xixi.domain.Evaluates">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="goodId" column="good_id" jdbcType="BIGINT"/>
+            <result property="starLevel" column="star_level" jdbcType="INTEGER"/>
+            <result property="evaluate" column="evaluate" jdbcType="VARCHAR"/>
+            <result property="created" column="created" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,good_id,
+        star_level,evaluate,created
+    </sql>
+
+    <select id="getGoodEvaluate" resultType="int">
+        select star_level from t_evaluates as e join t_goods as g on e.good_id = g.id where belong_id = #{belongId}
+    </select>
+</mapper>
