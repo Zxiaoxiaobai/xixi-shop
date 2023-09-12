@@ -80,6 +80,9 @@ public class AccountController {
 
     @PostMapping("/register")
     public Result register(String username,String password ){
+        if(username==null||password==null){
+            return Result.fail(201,"请输入账号或密码",null);
+        }
         User user = userService.getOne(new QueryWrapper<User>().eq("username",username));
         if(user != null){
             return Result.fail(300,"用户已存在！",null);
@@ -92,10 +95,10 @@ public class AccountController {
             user1.setLevel(0);
             user1.setPass(0);
             userService.save(user1);
-            User result = userService.getOne(new QueryWrapper<User>().eq("username", username));
-            Integral integral = new Integral();
-            integral.setUserId(result.getId());
-            integralService.save(integral);
+//            User result = userService.getOne(new QueryWrapper<User>().eq("username", username));
+//            Integral integral = new Integral();
+//            integral.setUserId(result.getId());
+//            integralService.save(integral);
             return Result.success("提交成功", null);
         }
     }
