@@ -8,10 +8,10 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * 
- * @TableName t_integral
+ *
+ * @TableName t_integrals
  */
-@TableName(value ="t_integral")
+@TableName(value ="t_integrals")
 @Data
 public class Integral implements Serializable {
     /**
@@ -21,14 +21,14 @@ public class Integral implements Serializable {
     private Long id;
 
     /**
-     * 用户id
+     * username
      */
-    private Long userId;
+    private String username;
 
     /**
-     * 积分
+     * information
      */
-    private Integer number;
+    private String information;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

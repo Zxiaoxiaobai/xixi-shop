@@ -23,21 +23,21 @@ public class IntegralController {
 		return Result.success(null);
 	}
 
-	@GetMapping("/getIntegral/{userId}")
-	public Result getIntegral(@PathVariable Long userId){
-		QueryWrapper<Integral> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("user_id", userId);
-		Integral integral = integralService.getOne(queryWrapper);
-		return Result.success(integral.getNumber());
-	}
+//	@GetMapping("/getIntegral/{userId}")
+//	public Result getIntegral(@PathVariable Long userId){
+//		QueryWrapper<Integral> queryWrapper = new QueryWrapper<>();
+//		queryWrapper.eq("user_id", userId);
+//		Integral integral = integralService.getOne(queryWrapper);
+//		return Result.success(integral.getNumber());
+//	}
 
-	@PostMapping("/useIntegral")
-	public Result useIntegral(@RequestBody Integral integral){
-		QueryWrapper<Integral> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("user_id", integral.getUserId());
-		Integral getIntegral = integralService.getOne(queryWrapper);
-		getIntegral.setNumber(getIntegral.getNumber() - integral.getNumber());
-		integralService.updateById(getIntegral);
-		return Result.success(null);
-	}
+//	@PostMapping("/useIntegral")
+//	public Result useIntegral(@RequestBody Integral integral){
+//		QueryWrapper<Integral> queryWrapper = new QueryWrapper<>();
+//		queryWrapper.eq("user_id", integral.getUserId());
+//		Integral getIntegral = integralService.getOne(queryWrapper);
+//		getIntegral.setNumber(getIntegral.getNumber() - integral.getNumber());
+//		integralService.updateById(getIntegral);
+//		return Result.success(null);
+//	}
 }

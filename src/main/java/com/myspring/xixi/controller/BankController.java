@@ -46,25 +46,25 @@ public class BankController {
 		return Result.success(bank);
 	}
 
-	@PostMapping("/changeMoney")
-	public Result changeMoney(@RequestBody Map<String, Object> map){
-		QueryWrapper<Bank> queryWrapper = new QueryWrapper<>();
-		queryWrapper.eq("bank_account", map.get("bankAccount"));
-		Bank userBank = bankService.getOne(queryWrapper);
-		Bank managerBank = bankService.getById(5L);
-		userBank.setMoney(userBank.getMoney().subtract(new BigDecimal(String.valueOf(map.get("money")))));
-		managerBank.setMoney(managerBank.getMoney().add(new BigDecimal(String.valueOf(map.get("money")))));
-		List<Bank> list = new ArrayList<>();
-		list.add(userBank);
-		list.add(managerBank);
-		bankService.updateBatchById(list);
-		QueryWrapper<Integral> queryWrapper1 = new QueryWrapper<>();
-		queryWrapper1.eq("user_id", map.get("userId"));
-		Integral integral = integralService.getOne(queryWrapper1);
-		integral.setNumber(integral.getNumber() + Integer.parseInt(String.valueOf(map.get("money"))));
-		integralService.updateById(integral);
-		return Result.success(null);
-	}
+//	@PostMapping("/changeMoney")
+//	public Result changeMoney(@RequestBody Map<String, Object> map){
+//		QueryWrapper<Bank> queryWrapper = new QueryWrapper<>();
+//		queryWrapper.eq("bank_account", map.get("bankAccount"));
+//		Bank userBank = bankService.getOne(queryWrapper);
+//		Bank managerBank = bankService.getById(5L);
+//		userBank.setMoney(userBank.getMoney().subtract(new BigDecimal(String.valueOf(map.get("money")))));
+//		managerBank.setMoney(managerBank.getMoney().add(new BigDecimal(String.valueOf(map.get("money")))));
+//		List<Bank> list = new ArrayList<>();
+//		list.add(userBank);
+//		list.add(managerBank);
+//		bankService.updateBatchById(list);
+//		QueryWrapper<Integral> queryWrapper1 = new QueryWrapper<>();
+//		queryWrapper1.eq("user_id", map.get("userId"));
+//		Integral integral = integralService.getOne(queryWrapper1);
+//		integral.setNumber(integral.getNumber() + Integer.parseInt(String.valueOf(map.get("money"))));
+//		integralService.updateById(integral);
+//		return Result.success(null);
+//	}
 
 	@PostMapping("/payMoney")
 	public Result payMoney(@RequestBody Map<String, Object> map){

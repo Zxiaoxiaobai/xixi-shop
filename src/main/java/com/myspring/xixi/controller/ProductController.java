@@ -12,8 +12,11 @@ import com.myspring.xixi.common.dto.ShopDTD;
 import com.myspring.xixi.common.lang.Result;
 import com.myspring.xixi.domain.Business;
 import com.myspring.xixi.domain.Goods;
+import com.myspring.xixi.domain.Integral;
 import com.myspring.xixi.service.BusinessService;
 import com.myspring.xixi.service.GoodsService;
+import com.myspring.xixi.service.IntegralService;
+import javafx.scene.canvas.GraphicsContext;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +35,8 @@ public class ProductController {
 
     @Autowired
     BusinessService businessService;
+    @Autowired
+    IntegralService integralService;
 
     /**
      * 商城首页按分类展示所有商品
@@ -104,8 +109,8 @@ public class ProductController {
 //            return Result.success(myGoods);
 //        }
     /**
-     *
-     *
+     *获取用户上传
+     * @return
      * */
     @GetMapping("/transaction/user/getUpload")
     public Result getUpload(Integer uuid){
@@ -134,109 +139,138 @@ public class ProductController {
         return Result.success(shopDTDS);
     }
 
-    @GetMapping("/goods")
-    public Result getProducts(@RequestParam(defaultValue = "1") Integer currentPage){
-        Page page = new Page(currentPage, 12);
-        IPage pageData = goodsService.page(page, new QueryWrapper<Goods>().eq("pass", 1).orderByDesc("created"));
-        return Result.success(pageData);
-    }
+//    @GetMapping("/goods")
+//    public Result getProducts(@RequestParam(defaultValue = "1") Integer currentPage){
+//        Page page = new Page(currentPage, 12);
+//        IPage pageData = goodsService.page(page, new QueryWrapper<Goods>().eq("pass", 1).orderByDesc("created"));
+//        return Result.success(pageData);
+//    }
+//
+//    @GetMapping("/goodsByName")
+//    public Result goodsByName(@RequestParam(defaultValue = "1") Integer currentPage, String search){
+//        Page page = new Page(currentPage, 12);
+//        IPage pageData = goodsService.page(page,
+//                new QueryWrapper<Goods>().eq("pass", 1)
+//                        .like("goods_name", search)
+//                        .orderByDesc("created"));
+//        return Result.success(pageData);
+//    }
+//
+//    @GetMapping("/goodsByShop")
+//    public Result goodsByShop(@RequestParam(defaultValue = "1") Integer currentPage, String search){
+//        Business shop = businessService.getOne(new QueryWrapper<Business>().like("shop_name", search));
+//        Long shopId;
+//        if(shop != null){
+//            shopId = shop.getId();
+//        }else{
+//            shopId = -1L;
+//        }
+//        Page page = new Page(currentPage, 12);
+//        IPage pageData = goodsService.page(page,
+//                new QueryWrapper<Goods>().eq("pass", 1)
+//                        .eq("belong_id", shopId)
+//                        .orderByDesc("created"));
+//        return Result.success(pageData);
+//    }
 
-    @GetMapping("/goodsByName")
-    public Result goodsByName(@RequestParam(defaultValue = "1") Integer currentPage, String search){
-        Page page = new Page(currentPage, 12);
-        IPage pageData = goodsService.page(page,
-                new QueryWrapper<Goods>().eq("pass", 1)
-                        .like("goods_name", search)
-                        .orderByDesc("created"));
-        return Result.success(pageData);
-    }
+//    /**
+//     * 商家查看自己店铺中的商品
+//     * @param shopId
+//     * @return
+//     */
+//    @GetMapping("/goods/{shopId}")
+//    public Result getMyProducts(@PathVariable("shopId") Integer shopId){
+//        List<Goods> myGoods = goodsService.getMyGoods(shopId.longValue());
+//        if(myGoods.size() != 0){
+//            List<Map<String, Object>> myGoodsMap = new ArrayList<>();
+//            myGoods.forEach(goods -> {
+//                Map<String, Object> map = BeanUtil.beanToMap(goods);
+//                map.put("created", goods.getCreated().toLocalDate().toString());
+//                map.put("picGoods", "data:image/jpeg;base64,"+Base64.getEncoder().encodeToString(goods.getPicGoods()));
+//                myGoodsMap.add(map);
+//            });
+//            List<List<Map<String, Object>>> list = new ArrayList<>();
+//            String time = (String) myGoodsMap.get(0).get("created");
+//            int size = 0;
+//            int index = 0;
+//            for (int i = 0; i < myGoodsMap.size(); i++) {
+//                String created = (String) myGoodsMap.get(i).get("created");
+//                if(created.equals(time)){
+//                    size++;
+//                } else {
+//                    time = created;
+//                    List<Map<String, Object>> goods = myGoodsMap.subList(index, index + size);
+//                    list.add(goods);
+//                    index += size;
+//                    size = 1;
+//                }
+//            }
+//            list.add(myGoodsMap.subList(index, index + size));
+//            List<Map<String, Object>> listMap = new ArrayList<>();
+//            list.forEach(val -> {
+//                Map<String, Object> map = new HashMap<>();
+//                map.put("created", val.get(0).get("created"));
+//                map.put("goods", val);
+//                listMap.add(map);
+//            });
+//            return Result.success(listMap);
+//        }else{
+//            return Result.success(myGoods);
+//        }
+//
+//    }
 
-    @GetMapping("/goodsByShop")
-    public Result goodsByShop(@RequestParam(defaultValue = "1") Integer currentPage, String search){
-        Business shop = businessService.getOne(new QueryWrapper<Business>().like("shop_name", search));
-        Long shopId;
-        if(shop != null){
-            shopId = shop.getId();
-        }else{
-            shopId = -1L;
-        }
-        Page page = new Page(currentPage, 12);
-        IPage pageData = goodsService.page(page,
-                new QueryWrapper<Goods>().eq("pass", 1)
-                        .eq("belong_id", shopId)
-                        .orderByDesc("created"));
-        return Result.success(pageData);
-    }
-
+//    /**
+//     * 商家添加商品
+//     * @return
+//     * @throws IOException
+//     */
+//    @PostMapping("/goods/{shopId}")
+//    public Result addGoods(@PathVariable("shopId") Integer shopId, Goods goods, MultipartFile goodsPic) throws IOException {
+//        goods.setBelongId((int)shopId.longValue());
+//        goods.setPicGoods(goodsPic.getBytes());
+//        goods.setCreated(LocalDateTime.now());
+//        boolean result = goodsService.save(goods);
+//        return Result.success(null);
+//    }
+//    /**
+//    *
+//    *
+//    * */
+//    @PostMapping("/transaction/user/upload")
+//    public Result upLoad (Integer contactWay){
+//        Goods goods =new Goods();
+//        goods.setCreated(LocalDateTime.now());
+//        goods.setDiscount(contactWay);
+//        boolean result =goodsService.save(goods);
+//        if (result)return Result.success(200,"成功");
+//        else return Result.fail("上传失败");
+//    }
     /**
-     * 商家查看自己店铺中的商品
-     * @param shopId
+     * 用户反馈
      * @return
-     */
-    @GetMapping("/goods/{shopId}")
-    public Result getMyProducts(@PathVariable("shopId") Integer shopId){
-        List<Goods> myGoods = goodsService.getMyGoods(shopId.longValue());
-        if(myGoods.size() != 0){
-            List<Map<String, Object>> myGoodsMap = new ArrayList<>();
-            myGoods.forEach(goods -> {
-                Map<String, Object> map = BeanUtil.beanToMap(goods);
-                map.put("created", goods.getCreated().toLocalDate().toString());
-                map.put("picGoods", "data:image/jpeg;base64,"+Base64.getEncoder().encodeToString(goods.getPicGoods()));
-                myGoodsMap.add(map);
-            });
-            List<List<Map<String, Object>>> list = new ArrayList<>();
-            String time = (String) myGoodsMap.get(0).get("created");
-            int size = 0;
-            int index = 0;
-            for (int i = 0; i < myGoodsMap.size(); i++) {
-                String created = (String) myGoodsMap.get(i).get("created");
-                if(created.equals(time)){
-                    size++;
-                } else {
-                    time = created;
-                    List<Map<String, Object>> goods = myGoodsMap.subList(index, index + size);
-                    list.add(goods);
-                    index += size;
-                    size = 1;
-                }
-            }
-            list.add(myGoodsMap.subList(index, index + size));
-            List<Map<String, Object>> listMap = new ArrayList<>();
-            list.forEach(val -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("created", val.get(0).get("created"));
-                map.put("goods", val);
-                listMap.add(map);
-            });
-            return Result.success(listMap);
-        }else{
-            return Result.success(myGoods);
-        }
-
-    }
-
-    /**
-     * 商家添加商品
-     * @return
-     * @throws IOException
-     */
-    @PostMapping("/goods/{shopId}")
-    public Result addGoods(@PathVariable("shopId") Integer shopId, Goods goods, MultipartFile goodsPic) throws IOException {
-        goods.setBelongId((int)shopId.longValue());
-        goods.setPicGoods(goodsPic.getBytes());
-        goods.setCreated(LocalDateTime.now());
-        boolean result = goodsService.save(goods);
-        return Result.success(null);
-    }
-    @PostMapping("/transaction/user/upload")
-    public Result upLoad (Integer contactWay){
-        Goods goods =new Goods();
-        goods.setCreated(LocalDateTime.now());
-        goods.setDiscount(contactWay);
-        boolean result =goodsService.save(goods);
+     * */
+    @PostMapping("/transaction/user/feedback")
+    public Result feedback (String information,String username){
+        Integral integral =new Integral();
+        integral.setUsername(username);
+        integral.setInformation(information);
+        boolean result =integralService.save(integral);
         if (result)return Result.success(200,"成功");
         else return Result.fail("上传失败");
     }
+    /**
+     * 获取用户反馈
+     *
+     * */
+    @GetMapping("/transaction/getUser/feedback")
+    public Result GetFeedback(){
+        return Result.success(integralService.getAllIntegral());
+    }
+    /**
+     * 用户上传
+     *
+     * */
     @PostMapping("/transaction/user/upload")
     public Result upLoad (  Integer uuid , Integer classifyId , String commodityName, Integer commodityPrice, Integer contactWay,MultipartFile commodityImg) throws IOException {
         Goods goods =new Goods();

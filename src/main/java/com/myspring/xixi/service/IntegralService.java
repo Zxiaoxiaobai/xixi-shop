@@ -2,6 +2,9 @@ package com.myspring.xixi.service;
 
 import com.myspring.xixi.domain.Integral;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.myspring.xixi.domain.User;
+
+import java.util.List;
 
 /**
 * @author 惠普
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface IntegralService extends IService<Integral> {
 
+    public List<Integral> getAllIntegral();
 }

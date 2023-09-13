@@ -6,11 +6,11 @@
 
     <resultMap id="BaseResultMap" type="com.myspring.xixi.domain.Integral">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userId" column="user_id" jdbcType="BIGINT"/>
-            <result property="number" column="number" jdbcType="INTEGER"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="information" column="information" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,number
+        id,username,information
     </sql>
 </mapper>
