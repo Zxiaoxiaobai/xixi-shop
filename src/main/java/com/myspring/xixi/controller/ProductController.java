@@ -51,6 +51,7 @@ public class ProductController {
         List<ShopDTD> shopDTDS = new ArrayList<>();
         for (int i = 0; i < myGoods.size(); i++) {
             ShopDTD shopDTD = new ShopDTD();
+            if(myGoods.get(i).getPass()==1){
             //分类
             shopDTD.setClassifyId(myGoods.get(i).getBelongId());
             //照片
@@ -66,6 +67,7 @@ public class ProductController {
             //审核状态
             shopDTD.setPass(myGoods.get(i).getPass());
             shopDTDS.add(shopDTD);
+            }
         }
         //System.out.println(shopDTDS);
         return Result.success(shopDTDS);
@@ -100,6 +102,45 @@ public class ProductController {
         }
         return Result.success(shopDTDS);
     }
+    /**
+     * 获取未审核商品
+     * */
+    @GetMapping("/transaction/commodity/getAll")
+    public Result getAll(){
+        List<ShopDTD> shopDTDS =new ArrayList<>();
+        List<Goods> allGoods = goodsService.getAllGoods();
+        for (int i = 0; i < allGoods.size(); i++) {
+            ShopDTD shopDTD = new ShopDTD();
+            if(allGoods.get(i).getPass()==0){
+                //分类名称
+                if(allGoods.get(i).getBelongId()==0)
+                    shopDTD.setClassName("教材教辅");
+                else if (allGoods.get(i).getPass()==1) {
+                    shopDTD.setClassName("生活用品");
+                } else if (allGoods.get(i).getPass()==2) {
+                    shopDTD.setClassName("电子数码");
+                }else
+                    shopDTD.setClassName("其它");
+                //分类id
+                shopDTD.setClassifyId(allGoods.get(i).getBelongId());
+                //照片
+                shopDTD.setCommodityImage(allGoods.get(i).getPicGoods());
+                //名称
+                shopDTD.setCommodityName(allGoods.get(i).getGoodsName());
+                //Id
+                shopDTD.setCommodityId(allGoods.get(i).getId());
+                //价格
+                shopDTD.setCommodityPrice(allGoods.get(i).getPrice());
+                //联系方式
+                shopDTD.setContactWay(allGoods.get(i).getDiscount());
+                //审核状态
+                shopDTD.setPass(allGoods.get(i).getPass());
+                shopDTDS.add(shopDTD);
+            }
+        }
+        return Result.success(shopDTDS);
+    }
+
     /**
      * 用户反馈
      * @return

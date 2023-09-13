@@ -1,7 +1,8 @@
 package com.myspring.xixi.common.dto;
 
 public class ShopDTD {
-
+    //分类名称
+    String className;
     //分类id
     Integer classifyId ;
     //照片
@@ -16,6 +17,14 @@ public class ShopDTD {
     Integer commodityId;
     //商品状态 0审核 1通过 2不通过
     Integer pass;
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
     public Integer getPass() {
         return pass;
