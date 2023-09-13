@@ -58,6 +58,8 @@ public class ProductController {
             shopDTD.setCommodityPrice(myGoods.get(i).getPrice());
             //联系方式
             shopDTD.setContactWay(myGoods.get(i).getDiscount());
+            //审核状态
+            shopDTD.setPass(myGoods.get(i).getPass());
             shopDTDS.add(shopDTD);
         }
         //System.out.println(shopDTDS);
@@ -101,6 +103,10 @@ public class ProductController {
 //        }else{
 //            return Result.success(myGoods);
 //        }
+    /**
+     *
+     *
+     * */
     @GetMapping("/transaction/user/getUpload")
     public Result getUpload(Integer uuid){
         List<Goods> allGoods = goodsService.getAllGoods();
@@ -111,7 +117,7 @@ public class ProductController {
                 //分类
                 shopDTD.setClassifyId(allGoods.get(i).getBelongId());
                 //照片
-                //shopDTD.setCommodityImage(allGoods.get(i).getPicGoods());
+                shopDTD.setCommodityImage(allGoods.get(i).getPicGoods());
                 //名称
                 shopDTD.setCommodityName(allGoods.get(i).getGoodsName());
                 //Id
@@ -214,25 +220,25 @@ public class ProductController {
      * @return
      * @throws IOException
      */
-//    @PostMapping("/goods/{shopId}")
-//    public Result addGoods(@PathVariable("shopId") Integer shopId, Goods goods, MultipartFile goodsPic) throws IOException {
-//        goods.setBelongId(shopId.longValue());
-//        goods.setPicGoods(goodsPic.getBytes());
-//        goods.setCreated(LocalDateTime.now());
-//        boolean result = goodsService.save(goods);
-//        return Result.success(null);
-//    }
-//    @PostMapping("/transaction/user/upload")
-//    public Result upLoad (Integer contactWay){
-//        Goods goods =new Goods();
-//        goods.setCreated(LocalDateTime.now());
-//        goods.setDiscount(contactWay);
-//        boolean result =goodsService.save(goods);
-//        if (result)return Result.success(200,"成功");
-//        else return Result.fail("上传失败");
-//    }
+    @PostMapping("/goods/{shopId}")
+    public Result addGoods(@PathVariable("shopId") Integer shopId, Goods goods, MultipartFile goodsPic) throws IOException {
+        goods.setBelongId((int)shopId.longValue());
+        goods.setPicGoods(goodsPic.getBytes());
+        goods.setCreated(LocalDateTime.now());
+        boolean result = goodsService.save(goods);
+        return Result.success(null);
+    }
     @PostMapping("/transaction/user/upload")
-    public Result upLoad (  Integer uuid , Integer classifyId , String commodityName, Integer commodityPrice, Integer contactWay){
+    public Result upLoad (Integer contactWay){
+        Goods goods =new Goods();
+        goods.setCreated(LocalDateTime.now());
+        goods.setDiscount(contactWay);
+        boolean result =goodsService.save(goods);
+        if (result)return Result.success(200,"成功");
+        else return Result.fail("上传失败");
+    }
+    @PostMapping("/transaction/user/upload")
+    public Result upLoad (  Integer uuid , Integer classifyId , String commodityName, Integer commodityPrice, Integer contactWay,MultipartFile commodityImg) throws IOException {
         Goods goods =new Goods();
         //名称
         goods.setGoodsName(commodityName);
@@ -241,7 +247,7 @@ public class ProductController {
         //时间
         goods.setCreated(LocalDateTime.now());
         //照片
-        //goods.setPicGoods(commodityImage);
+        goods.setPicGoods(commodityImg.getBytes());
         //价格
         goods.setPrice(commodityPrice);
         //联系方式
