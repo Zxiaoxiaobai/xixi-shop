@@ -11,6 +11,10 @@ spring:
   thymeleaf:
     encoding: UTF-8
     cache: false
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
 
 mybatis-plus:
   type-aliases-package: com.myspring.xixi.domain
