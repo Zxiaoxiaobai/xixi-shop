@@ -70,7 +70,97 @@ public class ProductController {
         //System.out.println(shopDTDS);
         return Result.success(shopDTDS);
     }
-
+    /**
+     *获取用户上传
+     * @return
+     * */
+    @GetMapping("/transaction/user/getUpload")
+    public Result getUpload(Integer uuid){
+        List<Goods> allGoods = goodsService.getAllGoods();
+        List<ShopDTD> shopDTDS =new ArrayList<>();
+        for (int i = 0; i < allGoods.size(); i++) {
+            ShopDTD shopDTD = new ShopDTD();
+            if(allGoods.get(i).getPiece()==uuid){
+                //分类
+                shopDTD.setClassifyId(allGoods.get(i).getBelongId());
+                //照片
+                shopDTD.setCommodityImage(allGoods.get(i).getPicGoods());
+                //名称
+                shopDTD.setCommodityName(allGoods.get(i).getGoodsName());
+                //Id
+                shopDTD.setCommodityId(allGoods.get(i).getId());
+                //价格
+                shopDTD.setCommodityPrice(allGoods.get(i).getPrice());
+                //联系方式
+                shopDTD.setContactWay(allGoods.get(i).getDiscount());
+                //审核状态
+                shopDTD.setPass(allGoods.get(i).getPass());
+                shopDTDS.add(shopDTD);
+            }
+        }
+        return Result.success(shopDTDS);
+    }
+    /**
+     * 用户反馈
+     * @return
+     * */
+    @PostMapping("/transaction/user/feedback")
+    public Result feedback (String information,String username){
+        Integral integral =new Integral();
+        integral.setUsername(username);
+        integral.setInformation(information);
+        boolean result =integralService.save(integral);
+        if (result)return Result.success(200,"成功");
+        else return Result.fail("上传失败");
+    }
+    /**
+     * 获取用户反馈
+     *
+     * */
+    @GetMapping("/transaction/getUser/feedback")
+    public Result GetFeedback(){
+        return Result.success(integralService.getAllIntegral());
+    }
+    /**
+     * 用户上传
+     *
+     * */
+    @PostMapping("/transaction/user/upload")
+    public Result upLoad (  Integer uuid , Integer classifyId , String commodityName, Integer commodityPrice, Integer contactWay,MultipartFile commodityImg) throws IOException {
+        Goods goods =new Goods();
+        //名称
+        goods.setGoodsName(commodityName);
+        //分类
+        goods.setBelongId(classifyId);
+        //时间
+        goods.setCreated(LocalDateTime.now());
+        //照片
+        goods.setPicGoods(commodityImg.getBytes());
+        //价格
+        goods.setPrice(commodityPrice);
+        //联系方式
+        goods.setDiscount(contactWay);
+        //所属人id
+        goods.setPiece(uuid);
+        //审核状态
+        goods.setPass(0);
+        boolean result =goodsService.save(goods);
+        if (result)return Result.success(200,"成功");
+        else return Result.fail("上传失败");
+    }
+    /**
+     * 管理员修改商品状态
+     * @return
+     */
+    @PostMapping("/transaction/admin/check")
+    public Result gPass(Integer commodityId,Integer newStatus){
+        UpdateWrapper<Goods> updateWrapper =new UpdateWrapper<>();
+        updateWrapper.eq("id",commodityId);
+        updateWrapper.set("pass",newStatus);
+        boolean restul = goodsService.update(updateWrapper);
+        if(restul) return Result.success("修改成功");
+        else return Result.fail("修改失败");
+    }
 //        List<Goods> myGoods = goodsService.getMyGoods(classifyId);
 //        if(myGoods.size() != 0){
 //            List<Map<String, Object>> myGoodsMap = new ArrayList<>();
@@ -108,37 +198,6 @@ public class ProductController {
 //        }else{
 //            return Result.success(myGoods);
 //        }
-    /**
-     *获取用户上传
-     * @return
-     * */
-    @GetMapping("/transaction/user/getUpload")
-    public Result getUpload(Integer uuid){
-        List<Goods> allGoods = goodsService.getAllGoods();
-        List<ShopDTD> shopDTDS =new ArrayList<>();
-        for (int i = 0; i < allGoods.size(); i++) {
-            ShopDTD shopDTD = new ShopDTD();
-            if(allGoods.get(i).getPiece()==uuid){
-                //分类
-                shopDTD.setClassifyId(allGoods.get(i).getBelongId());
-                //照片
-                shopDTD.setCommodityImage(allGoods.get(i).getPicGoods());
-                //名称
-                shopDTD.setCommodityName(allGoods.get(i).getGoodsName());
-                //Id
-                shopDTD.setCommodityId(allGoods.get(i).getId());
-                //价格
-                shopDTD.setCommodityPrice(allGoods.get(i).getPrice());
-                //联系方式
-                shopDTD.setContactWay(allGoods.get(i).getDiscount());
-                //审核状态
-                shopDTD.setPass(allGoods.get(i).getPass());
-                shopDTDS.add(shopDTD);
-                }
-        }
-        return Result.success(shopDTDS);
-    }
-
 //    @GetMapping("/goods")
 //    public Result getProducts(@RequestParam(defaultValue = "1") Integer currentPage){
 //        Page page = new Page(currentPage, 12);
@@ -246,111 +305,43 @@ public class ProductController {
 //        if (result)return Result.success(200,"成功");
 //        else return Result.fail("上传失败");
 //    }
-    /**
-     * 用户反馈
-     * @return
-     * */
-    @PostMapping("/transaction/user/feedback")
-    public Result feedback (String information,String username){
-        Integral integral =new Integral();
-        integral.setUsername(username);
-        integral.setInformation(information);
-        boolean result =integralService.save(integral);
-        if (result)return Result.success(200,"成功");
-        else return Result.fail("上传失败");
-    }
-    /**
-     * 获取用户反馈
-     *
-     * */
-    @GetMapping("/transaction/getUser/feedback")
-    public Result GetFeedback(){
-        return Result.success(integralService.getAllIntegral());
-    }
-    /**
-     * 用户上传
-     *
-     * */
-    @PostMapping("/transaction/user/upload")
-    public Result upLoad (  Integer uuid , Integer classifyId , String commodityName, Integer commodityPrice, Integer contactWay,MultipartFile commodityImg) throws IOException {
-        Goods goods =new Goods();
-        //名称
-        goods.setGoodsName(commodityName);
-        //分类
-        goods.setBelongId(classifyId);
-        //时间
-        goods.setCreated(LocalDateTime.now());
-        //照片
-        goods.setPicGoods(commodityImg.getBytes());
-        //价格
-        goods.setPrice(commodityPrice);
-        //联系方式
-        goods.setDiscount(contactWay);
-        //所属人id
-        goods.setPiece(uuid);
-        //审核状态
-        goods.setPiece(0);
-        boolean result =goodsService.save(goods);
-        if (result)return Result.success(200,"成功");
-        else return Result.fail("上传失败");
-    }
+//    /**
+//     * 管理员查看所有商品
+//     * @param loginDTO
+//     * @return
+//     */
+//    @RequiresAuthentication
+//    @PostMapping("/goods")
+//    public Result allGoods(@RequestBody LoginDTO loginDTO){
+//        if(loginDTO.getLevel() == 1){
+//            List<Goods> allGoods = goodsService.getAllGoods();
+//            List<Map<String, Object>> goodsInfo = new ArrayList<>();
+//            allGoods.forEach(goods -> {
+//                Map<String, Object> map = BeanUtil.beanToMap(goods);
+//                String shopName = businessService.getShopName((long) goods.getBelongId());
+//                map.remove("belongId");
+//                map.put("shopName", shopName);
+//                map.put("created", goods.getCreated().toLocalDate());
+//                map.put("picGoods", "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(goods.getPicGoods()));
+//                goodsInfo.add(map);
+//            });
+//            return Result.success(goodsInfo);
+//        } else {
+//            return Result.fail("无权查看信息！！！");
+//        }
+//    }
 
-    /**
-     * 管理员查看所有商品
-     * @param loginDTO
-     * @return
-     */
-    @RequiresAuthentication
-    @PostMapping("/goods")
-    public Result allGoods(@RequestBody LoginDTO loginDTO){
-        if(loginDTO.getLevel() == 1){
-            List<Goods> allGoods = goodsService.getAllGoods();
-            List<Map<String, Object>> goodsInfo = new ArrayList<>();
-            allGoods.forEach(goods -> {
-                Map<String, Object> map = BeanUtil.beanToMap(goods);
-                String shopName = businessService.getShopName((long) goods.getBelongId());
-                map.remove("belongId");
-                map.put("shopName", shopName);
-                map.put("created", goods.getCreated().toLocalDate());
-                map.put("picGoods", "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(goods.getPicGoods()));
-                goodsInfo.add(map);
-            });
-            return Result.success(goodsInfo);
-        } else {
-            return Result.fail("无权查看信息！！！");
-        }
-    }
-
-    /**
-     * 管理员修改商品状态
-     * @param changePassDTO
-     * @return
-     */
-    @PostMapping("/goodsPass")
-    public Result gPass(@RequestBody ChangePassDTO changePassDTO){
-        Goods goods = goodsService.getById(changePassDTO.getId());
-        if(goods.getPass() == 1){
-            goods.setPass(-1);
-            changePassDTO.setPass(-1);
-        } else {
-            goods.setPass(1);
-            changePassDTO.setPass(1);
-        }
-        goodsService.saveOrUpdate(goods);
-        return Result.success(changePassDTO);
-    }
-
-    @GetMapping("/good/{goodId}")
-    public Result getGoodById(@PathVariable("goodId") Integer goodId){
-        return Result.success(goodsService.getById(goodId));
-    }
-
-    @PostMapping("/changeGood")
-    public Result changeGood(@RequestBody Goods goods){
-        UpdateWrapper<Goods> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id", goods.getId());
-        updateWrapper.set("piece", goods.getPiece()).set("pass", goods.getPass());
-        goodsService.update(updateWrapper);
-        return Result.success(null);
-    }
+//    @GetMapping("/good/{goodId}")
+//    public Result getGoodById(@PathVariable("goodId") Integer goodId){
+//        return Result.success(goodsService.getById(goodId));
+//    }
+//
+//    @PostMapping("/changeGood")
+//    public Result changeGood(@RequestBody Goods goods){
+//        UpdateWrapper<Goods> updateWrapper = new UpdateWrapper<>();
+//        updateWrapper.eq("id", goods.getId());
+//        updateWrapper.set("piece", goods.getPiece()).set("pass", goods.getPass());
+//        goodsService.update(updateWrapper);
+//        return Result.success(null);
+//    }
 }
