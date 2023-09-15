@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="t_integrals")
 @Data
-public class Integral implements Serializable {
+public class Integrals implements Serializable {
     /**
      * id
      */
@@ -29,10 +29,10 @@ public class Integral implements Serializable {
      * information
      */
     private String information;
-//    /**
-//     * id
-//     * */
-//    private Integer Id;
+    /**
+     * id
+     * */
+    private Integer Id;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

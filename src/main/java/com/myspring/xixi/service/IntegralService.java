@@ -2,7 +2,7 @@ package com.myspring.xixi.service;
 
 import com.myspring.xixi.domain.Integral;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.myspring.xixi.domain.User;
+import com.myspring.xixi.domain.Integrals;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@ package com.myspring.xixi.mapper;
 
 import com.myspring.xixi.domain.Integral;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.myspring.xixi.domain.Integrals;
 
 /**
 * @author 惠普

@@ -8,7 +8,7 @@
             <id property="pass" column="pass" jdbcType="BIGINT"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="information" column="information" jdbcType="VARCHAR"/>
-<!--            <result property="pass" column="pass" jdbcType="Integer"/>-->
+<!--            <result property="Id" column="id" jdbcType="Integer"/>-->
     </resultMap>
 
     <sql id="Base_Column_List">

@@ -13,12 +13,17 @@ import com.myspring.xixi.common.lang.Result;
 import com.myspring.xixi.domain.Business;
 import com.myspring.xixi.domain.Goods;
 import com.myspring.xixi.domain.Integral;
+import com.myspring.xixi.domain.Integrals;
+import com.myspring.xixi.mapper.IntegralsMapper;
 import com.myspring.xixi.service.BusinessService;
 import com.myspring.xixi.service.GoodsService;
 import com.myspring.xixi.service.IntegralService;
+import com.myspring.xixi.service.IntegralsService;
+import com.myspring.xixi.service.impl.IntegralsServiceImpl;
 import javafx.scene.canvas.GraphicsContext;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +42,8 @@ public class ProductController {
     BusinessService businessService;
     @Autowired
     IntegralService integralService;
+    @Autowired
+    IntegralsService integralsService;
 
     /**
      * 商城首页按分类展示所有商品
@@ -147,11 +154,11 @@ public class ProductController {
      * */
     @PostMapping("/transaction/user/feedback")
     public Result feedback (String information,String username){
-        Integral integral =new Integral();
-        integral.setUsername(username);
-        integral.setInformation(information);
-        integral.setPass(0L);
-        boolean result =integralService.save(integral);
+        Integrals integrals =new Integrals();
+        integrals.setUsername(username);
+        integrals.setInformation(information);
+        integrals.setPass(0L);
+        boolean result =integralsService.save(integrals);
         if (result)return Result.success(200,"成功");
         else return Result.fail("上传失败");
     }
@@ -161,7 +168,7 @@ public class ProductController {
      * */
     @GetMapping("/transaction/getUser/feedback")
     public Result GetFeedback(){
-        return Result.success(integralService.getUpIntegral());
+        return Result.success(integralsService.getUpIntegral());
         //return Result.success(integralService.getUpIntegral());
     }
     /**
@@ -208,12 +215,14 @@ public class ProductController {
      * 已阅信息
      * */
     @GetMapping("/transaction/read")
-    public Result Read(String username ,Integer pass){
-        UpdateWrapper<Integral> updateWrapper =new UpdateWrapper<>();
-        updateWrapper.eq("username",username);
+    public Result Read(Integer id ,Integer pass){
+        UpdateWrapper<Integrals> updateWrapper =new UpdateWrapper<>();
+        updateWrapper.eq("id",id);
         updateWrapper.set("pass",pass);
-        boolean result =integralService.update(updateWrapper);
-        if(result) return Result.success("阅读成功");
+        boolean result =integralsService.update(updateWrapper);
+        if(result)
+        //boolean result = integralsService.update(updateWrapper);
+        return Result.success("阅读成功");
         else return Result.fail("失败");
     }
 //        List<Goods> myGoods = goodsService.getMyGoods(classifyId);
