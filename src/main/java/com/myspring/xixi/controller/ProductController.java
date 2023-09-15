@@ -150,6 +150,7 @@ public class ProductController {
         Integral integral =new Integral();
         integral.setUsername(username);
         integral.setInformation(information);
+        integral.setPass(0L);
         boolean result =integralService.save(integral);
         if (result)return Result.success(200,"成功");
         else return Result.fail("上传失败");
@@ -160,7 +161,8 @@ public class ProductController {
      * */
     @GetMapping("/transaction/getUser/feedback")
     public Result GetFeedback(){
-        return Result.success(integralService.getAllIntegral());
+        return Result.success(integralService.getUpIntegral());
+        //return Result.success(integralService.getUpIntegral());
     }
     /**
      * 用户上传
@@ -198,9 +200,21 @@ public class ProductController {
         UpdateWrapper<Goods> updateWrapper =new UpdateWrapper<>();
         updateWrapper.eq("id",commodityId);
         updateWrapper.set("pass",newStatus);
-        boolean restul = goodsService.update(updateWrapper);
-        if(restul) return Result.success("修改成功");
+        boolean result = goodsService.update(updateWrapper);
+        if(result) return Result.success("修改成功");
         else return Result.fail("修改失败");
+    }
+    /**
+     * 已阅信息
+     * */
+    @GetMapping("/transaction/read")
+    public Result Read(String username ,Integer pass){
+        UpdateWrapper<Integral> updateWrapper =new UpdateWrapper<>();
+        updateWrapper.eq("username",username);
+        updateWrapper.set("pass",pass);
+        boolean result =integralService.update(updateWrapper);
+        if(result) return Result.success("阅读成功");
+        else return Result.fail("失败");
     }
 //        List<Goods> myGoods = goodsService.getMyGoods(classifyId);
 //        if(myGoods.size() != 0){

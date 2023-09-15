@@ -14,4 +14,5 @@ import java.util.List;
 public interface IntegralService extends IService<Integral> {
 
     public List<Integral> getAllIntegral();
+    public List<Integral> getUpIntegral();
 }

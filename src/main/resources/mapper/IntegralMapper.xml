@@ -5,12 +5,13 @@
 <mapper namespace="com.myspring.xixi.mapper.IntegralMapper">
 
     <resultMap id="BaseResultMap" type="com.myspring.xixi.domain.Integral">
-            <id property="id" column="id" jdbcType="BIGINT"/>
+            <id property="pass" column="pass" jdbcType="BIGINT"/>
             <result property="username" column="username" jdbcType="VARCHAR"/>
             <result property="information" column="information" jdbcType="VARCHAR"/>
+<!--            <result property="pass" column="pass" jdbcType="Integer"/>-->
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,username,information
+        pass,username,information
     </sql>
 </mapper>
