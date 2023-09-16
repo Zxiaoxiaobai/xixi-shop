@@ -6,16 +6,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.math.BigDecimal;
-
 import lombok.Data;
 
 /**
  *
  * @TableName t_bank
  */
-@TableName(value ="t_bank")
+@TableName(value ="t_collect")
 @Data
-public class Bank implements Serializable {
+public class Collect implements Serializable {
     /**
      *
      */
@@ -25,13 +24,14 @@ public class Bank implements Serializable {
     /**
      *
      */
-    private String bankAccount;
+    private Integer userId;
 
     /**
      *
      */
-    private BigDecimal money;
+    private Integer goodsId;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
+

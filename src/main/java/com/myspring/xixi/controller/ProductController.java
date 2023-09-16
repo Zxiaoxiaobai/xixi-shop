@@ -10,15 +10,9 @@ import com.myspring.xixi.common.dto.ChangePassDTO;
 import com.myspring.xixi.common.dto.LoginDTO;
 import com.myspring.xixi.common.dto.ShopDTD;
 import com.myspring.xixi.common.lang.Result;
-import com.myspring.xixi.domain.Business;
-import com.myspring.xixi.domain.Goods;
-import com.myspring.xixi.domain.Integral;
-import com.myspring.xixi.domain.Integrals;
+import com.myspring.xixi.domain.*;
 import com.myspring.xixi.mapper.IntegralsMapper;
-import com.myspring.xixi.service.BusinessService;
-import com.myspring.xixi.service.GoodsService;
-import com.myspring.xixi.service.IntegralService;
-import com.myspring.xixi.service.IntegralsService;
+import com.myspring.xixi.service.*;
 import com.myspring.xixi.service.impl.IntegralsServiceImpl;
 import javafx.scene.canvas.GraphicsContext;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -44,6 +38,10 @@ public class ProductController {
     IntegralService integralService;
     @Autowired
     IntegralsService integralsService;
+    @Autowired
+    BankService bankService;
+    @Autowired
+    CollectService collectService;
 
     /**
      * 商城首页按分类展示所有商品
@@ -51,7 +49,7 @@ public class ProductController {
      */
 
     @GetMapping("/transaction/commodity/classifyId")
-    public Result getShops(Long classifyId) {
+    public Result GetShops(Long classifyId) {
         //belongId   分类 0，教材教辅，1，生活用品,2,电子数码,3,其他
 
         List<Goods> myGoods = goodsService.getMyGoods(classifyId);
@@ -84,7 +82,7 @@ public class ProductController {
      * @return
      * */
     @GetMapping("/transaction/user/getUpload")
-    public Result getUpload(Integer uuid){
+    public Result GetUpload(Integer uuid){
         List<Goods> allGoods = goodsService.getAllGoods();
         List<ShopDTD> shopDTDS =new ArrayList<>();
         for (int i = 0; i < allGoods.size(); i++) {
@@ -113,7 +111,7 @@ public class ProductController {
      * 获取未审核商品
      * */
     @GetMapping("/transaction/commodity/getAll")
-    public Result getAll(){
+    public Result GetAll(){
         List<ShopDTD> shopDTDS =new ArrayList<>();
         List<Goods> allGoods = goodsService.getAllGoods();
         for (int i = 0; i < allGoods.size(); i++) {
@@ -153,7 +151,7 @@ public class ProductController {
      * @return
      * */
     @PostMapping("/transaction/user/feedback")
-    public Result feedback (String information,String username){
+    public Result Feedback (String information,String username){
         Integrals integrals =new Integrals();
         integrals.setUsername(username);
         integrals.setInformation(information);
@@ -161,6 +159,50 @@ public class ProductController {
         boolean result =integralsService.save(integrals);
         if (result)return Result.success(200,"成功");
         else return Result.fail("上传失败");
+    }
+    /**
+     * 添加收藏
+     * @return
+     * */
+    @PostMapping("/transaction/user/collect")
+    public Result Collect(Integer uuid,Integer goodsId ){
+        Collect collect =new Collect();
+        collect.setUserId(uuid);
+        collect.setGoodsId(goodsId);
+        boolean result =collectService.save(collect);
+        if(result)  return Result.success("收藏成功");
+        else  return  Result.fail("出错了");
+    }
+    /**
+     * 获取用户收藏
+     * */
+    @GetMapping("/transaction/user/getCollect")
+    public Result GetCollect(Integer uuid){
+        List<Collect> collects= collectService.GetAllGoodsId(uuid);
+        if(collects.size()==0)return Result.success(201,"用户没有收藏");
+        List<ShopDTD> shopDTDS =new ArrayList<>();
+        for(int i=0;i< collects.size();i++){
+            ShopDTD shopDTD =new ShopDTD();
+            QueryWrapper<Goods>queryWrapper =new QueryWrapper<>();
+            queryWrapper.eq("id",collects.get(i).getGoodsId());
+            Goods allGoods =goodsService.getOne(queryWrapper);
+            //分类id
+            shopDTD.setClassifyId(allGoods.getBelongId());
+            //照片
+            shopDTD.setCommodityImage(allGoods.getPicGoods());
+            //名称
+            shopDTD.setCommodityName(allGoods.getGoodsName());
+            //Id
+            shopDTD.setCommodityId(allGoods.getId());
+            //价格
+            shopDTD.setCommodityPrice(allGoods.getPrice());
+            //联系方式
+            shopDTD.setContactWay(allGoods.getDiscount());
+            //审核状态
+            shopDTD.setPass(allGoods.getPass());
+            shopDTDS.add(shopDTD);
+        }
+        return Result.success(shopDTDS);
     }
     /**
      * 获取用户反馈
@@ -176,7 +218,7 @@ public class ProductController {
      *
      * */
     @PostMapping("/transaction/user/upload")
-    public Result upLoad (  Integer uuid , Integer classifyId , String commodityName, Integer commodityPrice, Integer contactWay,MultipartFile commodityImg) throws IOException {
+    public Result UpLoad (  Integer uuid , Integer classifyId , String commodityName, Integer commodityPrice, Integer contactWay,MultipartFile commodityImg) throws IOException {
         Goods goods =new Goods();
         //名称
         goods.setGoodsName(commodityName);
@@ -203,7 +245,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/transaction/admin/check")
-    public Result gPass(Integer commodityId,Integer newStatus){
+    public Result SetPass(Integer commodityId,Integer newStatus){
         UpdateWrapper<Goods> updateWrapper =new UpdateWrapper<>();
         updateWrapper.eq("id",commodityId);
         updateWrapper.set("pass",newStatus);

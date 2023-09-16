@@ -24,7 +24,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods>
         queryWrapper.eq("belong_id", longValue);
         return baseMapper.selectList(queryWrapper);
     }
-
     @Override
     public List<Goods> getAllGoods() {
         return baseMapper.selectList(null);
