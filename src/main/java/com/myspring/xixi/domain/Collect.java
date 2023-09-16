@@ -31,6 +31,8 @@ public class Collect implements Serializable {
      */
     private Integer goodsId;
 
+    private Integer isDelete;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

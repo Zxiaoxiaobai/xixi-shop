@@ -161,6 +161,15 @@ public class ProductController {
         else return Result.fail("上传失败");
     }
     /**
+     * 获取用户反馈
+     *
+     * */
+    @GetMapping("/transaction/getUser/feedback")
+    public Result GetFeedback(){
+        return Result.success(integralsService.getUpIntegral());
+        //return Result.success(integralService.getUpIntegral());
+    }
+    /**
      * 添加收藏
      * @return
      * */
@@ -169,9 +178,23 @@ public class ProductController {
         Collect collect =new Collect();
         collect.setUserId(uuid);
         collect.setGoodsId(goodsId);
+        collect.setIsDelete(0);
         boolean result =collectService.save(collect);
         if(result)  return Result.success("收藏成功");
         else  return  Result.fail("出错了");
+    }
+    /**
+     * 用户取消收藏
+     * */
+    @PostMapping("/transaction/user/removeCollect")
+    public Result RemoveCollect(Integer uuid,Integer goodsId){
+        UpdateWrapper<Collect> updateWrapper =new UpdateWrapper<>();
+        updateWrapper.eq("user_id",uuid).eq("goods_id",goodsId);
+        updateWrapper.set("is_delete",1);
+        boolean result =collectService.update(updateWrapper);
+        if(result)  return Result.success("取消成功");
+        else  return Result.fail("失败");
+
     }
     /**
      * 获取用户收藏
@@ -186,6 +209,7 @@ public class ProductController {
             QueryWrapper<Goods>queryWrapper =new QueryWrapper<>();
             queryWrapper.eq("id",collects.get(i).getGoodsId());
             Goods allGoods =goodsService.getOne(queryWrapper);
+
             //分类id
             shopDTD.setClassifyId(allGoods.getBelongId());
             //照片
@@ -203,15 +227,6 @@ public class ProductController {
             shopDTDS.add(shopDTD);
         }
         return Result.success(shopDTDS);
-    }
-    /**
-     * 获取用户反馈
-     *
-     * */
-    @GetMapping("/transaction/getUser/feedback")
-    public Result GetFeedback(){
-        return Result.success(integralsService.getUpIntegral());
-        //return Result.success(integralService.getUpIntegral());
     }
     /**
      * 用户上传
@@ -260,7 +275,7 @@ public class ProductController {
     public Result Read(Integer id ,Integer pass){
         UpdateWrapper<Integrals> updateWrapper =new UpdateWrapper<>();
         updateWrapper.eq("id",id);
-        updateWrapper.set("pass",pass);
+        updateWrapper.set("pass",(long)pass);
         boolean result =integralsService.update(updateWrapper);
         if(result)
         //boolean result = integralsService.update(updateWrapper);

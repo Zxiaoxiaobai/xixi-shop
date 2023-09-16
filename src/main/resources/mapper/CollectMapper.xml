@@ -8,9 +8,10 @@
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="userId" column="user_id" jdbcType="INTEGER"/>
         <result property="goodsId" column="goods_id" jdbcType="INTEGER"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,goods_id
+        id,user_id,goods_id,is_delete
     </sql>
 </mapper>
