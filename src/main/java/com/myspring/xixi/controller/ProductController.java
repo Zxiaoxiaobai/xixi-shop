@@ -175,6 +175,10 @@ public class ProductController {
      * */
     @PostMapping("/transaction/user/collect")
     public Result Collect(Integer uuid,Integer goodsId ){
+        QueryWrapper<Collect> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("user_id",uuid).eq("goods_id",goodsId);
+        Collect collects =collectService.getOne(queryWrapper);
+        if(collects!=null) return Result.success(201,"请勿重复提交");
         Collect collect =new Collect();
         collect.setUserId(uuid);
         collect.setGoodsId(goodsId);
@@ -205,11 +209,20 @@ public class ProductController {
         if(collects.size()==0)return Result.success(201,"用户没有收藏");
         List<ShopDTD> shopDTDS =new ArrayList<>();
         for(int i=0;i< collects.size();i++){
+            if(collects.get(i).getIsDelete()==0){
             ShopDTD shopDTD =new ShopDTD();
             QueryWrapper<Goods>queryWrapper =new QueryWrapper<>();
             queryWrapper.eq("id",collects.get(i).getGoodsId());
             Goods allGoods =goodsService.getOne(queryWrapper);
-
+                //分类名称
+                if(allGoods.getBelongId()==0)
+                    shopDTD.setClassName("教材教辅");
+                else if (allGoods.getPass()==1) {
+                    shopDTD.setClassName("生活用品");
+                } else if (allGoods.getPass()==2) {
+                    shopDTD.setClassName("电子数码");
+                }else
+                    shopDTD.setClassName("其它");
             //分类id
             shopDTD.setClassifyId(allGoods.getBelongId());
             //照片
@@ -224,8 +237,9 @@ public class ProductController {
             shopDTD.setContactWay(allGoods.getDiscount());
             //审核状态
             shopDTD.setPass(allGoods.getPass());
-            shopDTDS.add(shopDTD);
+            shopDTDS.add(shopDTD);}
         }
+        if(shopDTDS.size()==0)return Result.success(201,"用户没有收藏");
         return Result.success(shopDTDS);
     }
     /**
