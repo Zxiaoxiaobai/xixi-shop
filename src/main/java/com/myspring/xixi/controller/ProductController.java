@@ -177,7 +177,17 @@ public class ProductController {
         QueryWrapper<Collect> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("user_id",uuid).eq("goods_id",goodsId);
         Collect collects =collectService.getOne(queryWrapper);
-        if(collects!=null&&collects.getIsDelete()==0) return Result.success(201,"请勿重复提交");
+        if(collects!=null) {
+            if(collects.getIsDelete()==0)
+            return Result.success(201,"请勿重复提交");
+            if(collects.getIsDelete()==1){
+                UpdateWrapper<Collect> updateWrapper =new UpdateWrapper<>();
+                updateWrapper.eq("user_id",uuid).eq("goods_id",goodsId);
+                updateWrapper.set("is_delete",0);
+                boolean result =collectService.update(updateWrapper);
+                if(result)  return Result.success("收藏成功");
+            }
+        }
         Collect collect =new Collect();
         collect.setUserId(uuid);
         collect.setGoodsId(goodsId);
