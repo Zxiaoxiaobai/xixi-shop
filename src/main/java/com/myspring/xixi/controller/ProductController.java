@@ -31,7 +31,6 @@ public class ProductController {
 
     @Autowired
     GoodsService goodsService;
-
     @Autowired
     BusinessService businessService;
     @Autowired
@@ -178,7 +177,7 @@ public class ProductController {
         QueryWrapper<Collect> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("user_id",uuid).eq("goods_id",goodsId);
         Collect collects =collectService.getOne(queryWrapper);
-        if(collects!=null) return Result.success(201,"请勿重复提交");
+        if(collects!=null&&collects.getIsDelete()==0) return Result.success(201,"请勿重复提交");
         Collect collect =new Collect();
         collect.setUserId(uuid);
         collect.setGoodsId(goodsId);
