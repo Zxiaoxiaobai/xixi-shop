@@ -86,7 +86,7 @@ public class ProductController {
         List<ShopDTD> shopDTDS =new ArrayList<>();
         for (int i = 0; i < allGoods.size(); i++) {
             ShopDTD shopDTD = new ShopDTD();
-            if(allGoods.get(i).getPiece()==uuid){
+            if(allGoods.get(i).getPiece()==uuid&&allGoods.get(i).getPass()!=3){
                 //分类
                 shopDTD.setClassifyId(allGoods.get(i).getBelongId());
                 //照片

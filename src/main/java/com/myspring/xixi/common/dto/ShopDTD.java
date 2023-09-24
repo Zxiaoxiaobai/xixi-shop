@@ -15,7 +15,7 @@ public class ShopDTD {
     Integer contactWay;
     //商品id
     Integer commodityId;
-    //商品状态 0审核 1通过 2不通过
+    //商品状态 0审核 1通过 2不通过 3下架
     Integer pass;
 
     public String getClassName() {
